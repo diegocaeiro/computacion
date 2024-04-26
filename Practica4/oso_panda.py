@@ -1,29 +1,50 @@
 from mpi4py import MPI
 import random
+import sys
+
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
+N = 1000
+R = 8
+contador = 0
+verification = True
 
-R = 42
-n = random.randint(0,R)
+while verification and contador < N:
+    verification = False
 
-print(rank,'genera',n)
+    n = random.randint(0,R)
+    print(rank,'genera',n)
+    sys.stdout.flush()
 
-data = comm.bcast(n, root=0)
-data1 = comm.bcast(n, root=1)
-data2 = comm.bcast(n, root=2)
-data3 = comm.bcast(n, root=3)
+    for i in range(size):
+
+        data = comm.bcast(n, root=i)
+        print(f'{rank} recibe {data} de {i}')
+        sys.stdout.flush()
+
+        if data != n:
+            verification = True
+    
+    contador += 1
+
+if rank == 0:
+    print(f'Se hicieron {contador} ejecuciones del juego.')
 
 
-print(rank,'recive',data)
+if contador < N:
+    print(f'Todos los procesos sacaron el número {n} (esta verificación pertenece al proceso {rank})')
 
-if rank != 0:
-    print("Process", rank, "received data:", data)
+else:
+    print('No sacamos el mismo número :(')
 
 
     
+        
+            
+        
     
 
 
