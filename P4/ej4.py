@@ -9,9 +9,9 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
 
-M = 8
-N = 4
-P = 4
+M = 8001
+N = 4000
+P = 4000
 
 
 if rank == 0:
@@ -38,7 +38,7 @@ if M % size != 0:
         row_rest = m1[-rest:] # Filas restantes
         m1_simply = m1[:-rest]
         comm.send(row_rest, dest=size-1) # Enviar las filas restantes al último proceso
-        print(m1.shape)
+        
     else:
         m1_simply = np.empty((M, N))
         m2 = np.empty((N, P))
@@ -47,8 +47,8 @@ if M % size != 0:
         row_rest = comm.recv(source=0)
 
 
-if rank == 0:
-    print(m1.shape)
+# if rank == 0:
+#    print(m1.shape)
 
 
 # Envío de datos a los procesos
@@ -126,12 +126,8 @@ if rank == 0:
 
 if rank == 0:
     tiempo_sec = time()
-    print(m1.shape, m2.shape)
-    print(m1)
-    print(m2)
 
     result_sec = np.dot(m1, m2)
-    print('Matriz resultante:', result)
 
     tiempo_sec = time() - tiempo_sec
 
