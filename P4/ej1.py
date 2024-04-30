@@ -30,6 +30,7 @@ while True:
             comm.send(data,dest=rank+1) 
         else: 
             comm.send(data,dest=0)
+            
         break
 
     print(f'El valor recibido por el proceso {rank} fue {data}')
